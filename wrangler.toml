@@ -1,7 +1,7 @@
 name = "sandbox-hono-with-d1"
 main = "src/index.ts"
 compatibility_date = "2024-10-26"
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_flags = ["nodejs_compat"]
 
 # [vars]
 # MY_VAR = "my-variable"
@@ -14,10 +14,10 @@ compatibility_flags = [ "nodejs_compat" ]
 # binding = "MY_BUCKET"
 # bucket_name = "my-bucket"
 
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "my-database"
-# database_id = ""
+[[d1_databases]]
+binding = "DB"
+database_name = "d1-example"
+database_id = "8289ef7f-b101-413d-84e7-64647b579784"
 
 # [ai]
 # binding = "AI"
