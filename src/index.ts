@@ -1,15 +1,25 @@
 import { Hono } from 'hono'
 
-const app = new Hono()
+type Bindings = {
+  DB: D1Database
+}
+
+
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.get("/api/posts/:slug/comments", async (c) => {
-  // Do something and return an HTTP response
-  // Optionally, do something with `c.req.param("slug")`
-});
+  const { slug } = c.req.param();
 
-app.post("/api/posts/:slug/comments", async (c) => {
-  // Do something and return an HTTP response
-  // Optionally, do something with `c.req.param("slug")`
+  const db = await c.env.DB
+
+  const { results } = await db.prepare(
+    `
+    select * from comments where post_slug = ?
+  `,
+  )
+    .bind(slug)
+    .all();
+  return c.json(results);
 });
 
 export default app
