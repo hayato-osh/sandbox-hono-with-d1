@@ -1,14 +1,19 @@
+import { vValidator } from '@hono/valibot-validator'
 import { Hono } from 'hono'
+import { object, string } from 'valibot'
 
 type Bindings = {
   DB: D1Database
 }
 
-
 const app = new Hono<{ Bindings: Bindings }>()
 
-app.get("/api/posts/:slug/comments", async (c) => {
-  const { slug } = c.req.param();
+const getParamSchema = object({
+  slug: string(),
+})
+
+app.get("/api/posts/:slug/comments", vValidator('param',getParamSchema), async (c) => {
+  const { slug } = c.req.valid("param");
 
   const db = await c.env.DB
 
@@ -22,12 +27,17 @@ app.get("/api/posts/:slug/comments", async (c) => {
   return c.json(results);
 });
 
-app.post("/api/posts/:slug/comments", async (c) => {
-  const { slug } = c.req.param();
-  const { author, body } = await c.req.json();
+const postParamSchema = object({
+  slug: string(),
+})
+const postJsonSchema = object({
+  author: string('著者型エラー'),
+  body: string(),
+})
 
-  if (!author) return c.text("Missing author value for new comment");
-  if (!body) return c.text("Missing body value for new comment");
+app.post("/api/posts/:slug/comments", vValidator('param', postParamSchema), vValidator('json', postJsonSchema), async (c) => {
+  const { slug } = c.req.valid('param');
+  const { author, body } = c.req.valid('json');
 
   const db = await c.env.DB
 
