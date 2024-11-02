@@ -1,8 +1,10 @@
 import { Hono } from "hono";
 import posts from './posts'
+import { hc } from "hono/client";
 
 const app = new Hono();
 
-app.route('/posts', posts)
+const routes = app.route('/posts', posts)
 
-export default app;
+export default routes;
+

@@ -6,13 +6,19 @@ type Bindings = {
   DB: D1Database
 }
 
-const app = new Hono<{ Bindings: Bindings }>()
-
 const getParamSchema = object({
   slug: string(),
 })
 
-app.get("/:slug/comments", vValidator('param',getParamSchema), async (c) => {
+const postParamSchema = object({
+  slug: string(),
+})
+const postJsonSchema = object({
+  author: string('著者型エラー'),
+  body: string(),
+})
+
+const app = new Hono<{ Bindings: Bindings }>().get("/:slug/comments", vValidator('param',getParamSchema), async (c) => {
   const { slug } = c.req.valid("param");
 
   const db = await c.env.DB
@@ -25,17 +31,8 @@ app.get("/:slug/comments", vValidator('param',getParamSchema), async (c) => {
     .bind(slug)
     .all();
   return c.json(results);
-});
-
-const postParamSchema = object({
-  slug: string(),
 })
-const postJsonSchema = object({
-  author: string('著者型エラー'),
-  body: string(),
-})
-
-app.post("/:slug/comments", vValidator('param', postParamSchema), vValidator('json', postJsonSchema), async (c) => {
+.post("/:slug/comments", vValidator('param', postParamSchema), vValidator('json', postJsonSchema), async (c) => {
   const { slug } = c.req.valid('param');
   const { author, body } = c.req.valid('json');
 
@@ -57,5 +54,6 @@ app.post("/:slug/comments", vValidator('param', postParamSchema), vValidator('js
     return c.text("Something went wrong");
   }
 });
+
 
 export default app
