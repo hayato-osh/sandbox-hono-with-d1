@@ -1,5 +1,5 @@
 name = "sandbox-hono-with-d1"
-main = "src/index.ts"
+main = "src/api/index.ts"
 compatibility_date = "2024-10-26"
 compatibility_flags = ["nodejs_compat"]
 

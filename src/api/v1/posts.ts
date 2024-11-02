@@ -12,7 +12,7 @@ const getParamSchema = object({
   slug: string(),
 })
 
-app.get("/api/posts/:slug/comments", vValidator('param',getParamSchema), async (c) => {
+app.get("/:slug/comments", vValidator('param',getParamSchema), async (c) => {
   const { slug } = c.req.valid("param");
 
   const db = await c.env.DB
@@ -35,7 +35,7 @@ const postJsonSchema = object({
   body: string(),
 })
 
-app.post("/api/posts/:slug/comments", vValidator('param', postParamSchema), vValidator('json', postJsonSchema), async (c) => {
+app.post("/:slug/comments", vValidator('param', postParamSchema), vValidator('json', postJsonSchema), async (c) => {
   const { slug } = c.req.valid('param');
   const { author, body } = c.req.valid('json');
 
